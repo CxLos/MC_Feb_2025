@@ -71,7 +71,7 @@
 }
 
 .row1 {
-  margin:20px 0px 0px 10px;
+  margin:0px 0px 0px 10px;
   display:flex;
   flex-direction: row;
   justify-content: center;
@@ -149,7 +149,7 @@
   border-right: 2px solid rgb(186, 186, 186);
   border-bottom: 2px solid rgb(186, 186, 186);
   margin: 0px;
-  padding: 10px 20px 0px 0px;
+  padding: 0px 20px 0px 0px;
   width: 48%;
 }
 
@@ -157,7 +157,7 @@
   /* border-left: 2px solid gray; */
   border-bottom: 2px solid rgb(186, 186, 186);
   margin: 0px;
-  padding: 10px 0px 0px 30px;
+  padding: 0px 0px 0px 30px;
   width: 48%;
 }
 
@@ -224,47 +224,7 @@
   font-family: 'Calibri';
 }
 
-.high1 {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  font-size: 50px;
-  margin: 0px 0px 0px 0px;
-  padding: 0px 0px 0px 0px;
-}
-
-.high2 {
-  font-size: 70px;
-  margin: 0px 0px 0px 0px;
-  padding: 12px 20px 12px 20px;
-  display: flex; /* Use flexbox for alignment */
-  justify-content: center; /* Horizontal centering */
-  align-items: center; /* Vertical centering */
-  text-align: center; /* Ensure text inside is centered */
-  width: 100%; /* Ensure it spans full width */
-  height: 100%; /* Ensure it spans full height */
-}
-
-.hilite {
-  display: flex; 
-  justify-content: center; /* Horizontal centering */
-  align-items: center; /* Vertical centering */
-  text-align: center; /* Ensure text inside is centered */
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  margin: 20px 0px 0px 0px;
-  padding: 0px 0px 0px 0px;
-  border: 15px solid rgb(255, 235, 55);
-  border-radius: 100px;
-  background-color: rgb(255, 250, 202);
-  width: 100%; /* Adjust width to ensure it fills the parent */
-  height: 100%; /* Adjust height if needed */
-}
-
-.circle {
-  display: flex; 
-  flex-direction: column;
-  justify-content: center; /* Horizontal centering */
-  align-items: center; /* Vertical centering */
-  text-align: center; /* Ensure text inside is centered */
-}
+/* ================================ Highlights ================================== */
 
 .graph11 {
   display: flex;
@@ -278,6 +238,7 @@
   padding: 10px 20px 50px 0px;
   border-right: 2px solid rgb(186, 186, 186);
   border-bottom: 2px solid rgb(186, 186, 186);
+  border-top: 2px solid rgb(186, 186, 186);
 }
 
 .graph22 {
@@ -289,8 +250,9 @@
   /* height: 100%; */
   position: relative; /* Ensure positioning context */
   margin: 0px 0px 0px 0px;
-  padding: 10px 0px 20px 30px;
+  padding: 10px 30px 50px 0px;
   border-bottom: 2px solid rgb(186, 186, 186);
+  border-top: 2px solid rgb(186, 186, 186);
 }
 
 .graph33 {
@@ -304,5 +266,101 @@
   border-bottom: 2px solid rgb(186, 186, 186);
   margin: 0px;
   padding: 10px 0px 40px 0px;
-  width: 96%;
+  width: 98%;
+}
+
+.circle1 {
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  margin: 20px 0px 0px 0px;
+}
+
+.circle2 {
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+}
+
+.hilite {
+  display: flex; 
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  border: 15px solid rgb(255, 235, 55);
+  border-radius: 100px;
+  background-color: rgb(255, 250, 202);
+  width: 100%; /* Adjust width to ensure it fills the parent */
+  height: 100%; /* Adjust height if needed */
+}
+
+.high1 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 70px;
+  margin: 0px 0px 0px 0px;
+  padding: 25px 13px 25px 13px;
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  width: 100%; /* Ensure it spans full width */
+  height: 100%; /* Ensure it spans full height */
+}
+
+.high2 {
+  font-size: 70px;
+  margin: 0px 0px 0px 0px;
+  padding: 25px 13px 25px 13px;
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  width: 100%; /* Ensure it spans full width */
+  height: 100%; /* Ensure it spans full height */
+}
+
+.high3 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 70px;
+  margin: 20px 0px 0px 0px;
+  padding: 0px 13px 25px 13px;
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  width: 100%; /* Ensure it spans full width */
+  height: 100%; /* Ensure it spans full height */
+}
+
+.high4 {
+  font-size: 70px;
+  margin: 0px 0px 0px 0px;
+  padding: 25px 13px 25px 13px;
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  width: 100%; /* Ensure it spans full width */
+  height: 100%; /* Ensure it spans full height */
+}
+
+.high5 {
+  font-size: 70px;
+  margin: 0px 0px 0px 0px;
+  padding: 25px 12px 25px 12px;
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  width: 48%; /* Ensure it spans full width */
+  height: 100%; /* Ensure it spans full height */
 }
