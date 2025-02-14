@@ -32,6 +32,10 @@ df = data.copy()
 # Trim leading and trailing whitespaces from column names
 df.columns = df.columns.str.strip()
 
+# Trim whitespace from values in all columns
+df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+
+
 # Define a discrete color sequence
 color_sequence = px.colors.qualitative.Plotly
 
@@ -103,19 +107,12 @@ df['Please explain event-oriented:'] = df['Please explain event-oriented:'].fill
 
 # ========================= Filtered DataFrames ========================== #
 
+# -------------------------- MarCom Events --------------------------- #
+
 marcom_events = len(df)
 
-# Group by "Which MarCom activity category are you submitting an entry for?"
-df_activities = df.groupby('MarCom Activity').size().reset_index(name='Count')
-# print('Activities:\n', df_activities)
+# ---------------------------- MarCom Hours ---------------------------- #
 
-# Purpose dataframe:
-df_purpose = df.groupby('Purpose').size().reset_index(name='Count')
-
-# Product Type dataframe:
-df_product_type = df.groupby('Product Type').size().reset_index(name='Count')
-
-# "Activity Duration" dataframe:
 # Remove the word 'hours' from the 'Activity duration:' column
 df['Activity duration'] = df['Activity duration'].str.replace(' hours', '')
 df['Activity duration'] = df['Activity duration'].str.replace(' hour', '')
@@ -125,14 +122,350 @@ marcom_hours = df.groupby('Activity duration').size().reset_index(name='Count')
 marcom_hours = df['Activity duration'].sum()
 # print('Total Activity Duration:', sum_activity_duration, 'hours')
 
+# --------------------------- MarCom Activity -------------------------- #
+
+# Group by "Which MarCom activity category are you submitting an entry for?"
+df_activities = df.groupby('MarCom Activity').size().reset_index(name='Count')
+# print('Activities:\n', df_activities)
+
+activity_bar=px.bar(
+    df_activities,
+    x='MarCom Activity',
+    y='Count',
+    color='MarCom Activity',
+    text='Count',
+).update_layout(
+    height=460, 
+    width=780,
+    title=dict(
+        text='MarCom',
+        x=0.5, 
+        font=dict(
+            size=25,
+            family='Calibri',
+            color='black',
+            )
+    ),
+    font=dict(
+        family='Calibri',
+        size=18,
+        color='black'
+    ),
+    xaxis=dict(
+        tickangle=-15,  # Rotate x-axis labels for better readability
+        tickfont=dict(size=18),  # Adjust font size for the tick labels
+        title=dict(
+            text=None,
+            # text="Name",
+            font=dict(size=20),  # Font size for the title
+        ),
+        showticklabels=False  # Hide x-tick labels
+        # showticklabels=True  # Hide x-tick labels
+    ),
+    yaxis=dict(
+        title=dict(
+            text='Count',
+            font=dict(size=20),  # Font size for the title
+        ),
+    ),
+    legend=dict(
+        # title='Support',
+        title_text='',
+        orientation="v",  # Vertical legend
+        x=1.05,  # Position legend to the right
+        y=1,  # Position legend at the top
+        xanchor="left",  # Anchor legend to the left
+        yanchor="top",  # Anchor legend to the top
+        # visible=False
+        visible=True
+    ),
+    hovermode='closest', # Display only one hover label per trace
+    bargap=0.08,  # Reduce the space between bars
+    bargroupgap=0,  # Reduce space between individual bars in groups
+).update_traces(
+    textposition='auto',
+    hovertemplate='<b>Name:</b> %{label}<br><b>Count</b>: %{y}<extra></extra>'
+)
+
+# Person Pie Chart
+activity_pie=px.pie(
+    df_activities,
+    names="MarCom Activity",
+    values='Count'  # Specify the values parameter
+).update_layout(
+    height=460,
+    width=780,
+    title='MarCom Activity',
+    title_x=0.5,
+    font=dict(
+        family='Calibri',
+        size=17,
+        color='black'
+    )
+).update_traces(
+    rotation=0,
+    textposition='auto',
+    insidetextorientation='horizontal', 
+    textinfo='value+percent',
+    hovertemplate='<b>%{label} Status</b>: %{value}<extra></extra>',
+)
+
+# -------------------------- Person Completing Form ------------------------- #
+
 # "Person completing this form:" dataframe:
 df['Person completing this form:'] = df['Person completing this form:'].str.strip()
 df['Person completing this form:'] = df['Person completing this form:'].replace('Felicia Chanlder', 'Felicia Chandler')
 df_person = df.groupby('Person completing this form:').size().reset_index(name='Count')
 # print(df_person.value_counts())
 
+person_bar=px.bar(
+    df_person,
+    x='Person completing this form:',
+    y='Count',
+    color='Person completing this form:',
+    text='Count',
+).update_layout(
+    height=440, 
+    width=780,
+    title=dict(
+        text='People Submitting Forms',
+        x=0.5, 
+        font=dict(
+            size=25,
+            family='Calibri',
+            color='black',
+            )
+    ),
+    font=dict(
+        family='Calibri',
+        size=18,
+        color='black'
+    ),
+    xaxis=dict(
+        tickangle=-15,  # Rotate x-axis labels for better readability
+        tickfont=dict(size=18),  # Adjust font size for the tick labels
+        title=dict(
+            text=None,
+            # text="Name",
+            font=dict(size=20),  # Font size for the title
+        ),
+        # showticklabels=False  # Hide x-tick labels
+        showticklabels=True  # Hide x-tick labels
+    ),
+    yaxis=dict(
+        title=dict(
+            text='Count',
+            font=dict(size=20),  # Font size for the title
+        ),
+    ),
+    legend=dict(
+        # title='Support',
+        title_text='',
+        orientation="v",  # Vertical legend
+        x=1.05,  # Position legend to the right
+        y=1,  # Position legend at the top
+        xanchor="left",  # Anchor legend to the left
+        yanchor="top",  # Anchor legend to the top
+        visible=False
+        # visible=True
+    ),
+    hovermode='closest', # Display only one hover label per trace
+    bargap=0.08,  # Reduce the space between bars
+    bargroupgap=0,  # Reduce space between individual bars in groups
+).update_traces(
+    textposition='outside',
+    hovertemplate='<b>Name:</b> %{label}<br><b>Count</b>: %{y}<extra></extra>'
+)
+
+# Person Pie Chart
+person_pie=px.pie(
+    df_person,
+    names="Person completing this form:",
+    values='Count'  # Specify the values parameter
+).update_layout(
+    title='Ratio of People Filling Out Forms',
+    title_x=0.5,
+    font=dict(
+        family='Calibri',
+        size=17,
+        color='black'
+    )
+).update_traces(
+    rotation=0,
+    textposition='auto',
+    textinfo='value+percent',
+    hovertemplate='<b>%{label} Status</b>: %{value}<extra></extra>',
+)
+
+# --------------------- Activity Status --------------------- #
+
 # "Activity Status" dataframe:
 df_activity_status = df.groupby('Activity Status').size().reset_index(name='Count')
+
+status_bar=px.bar(
+    df_activity_status,
+    x='Activity Status',
+    y='Count',
+    color='Activity Status',
+    text='Count',
+).update_layout(
+    height=460, 
+    width=780,
+    title=dict(
+        text='Activity Status',
+        x=0.5, 
+        font=dict(
+            size=25,
+            family='Calibri',
+            color='black',
+            )
+    ),
+    font=dict(
+        family='Calibri',
+        size=18,
+        color='black'
+    ),
+    xaxis=dict(
+        tickangle=0,  # Rotate x-axis labels for better readability
+        tickfont=dict(size=18),  # Adjust font size for the tick labels
+        title=dict(
+            # text=None,
+            text="Status",
+            font=dict(size=20),  # Font size for the title
+        ),
+        # showticklabels=False  # Hide x-tick labels
+        showticklabels=True  # Hide x-tick labels
+    ),
+    yaxis=dict(
+        title=dict(
+            text='Count',
+            font=dict(size=20),  # Font size for the title
+        ),
+    ),
+    legend=dict(
+        # title='Support',
+        title_text='',
+        orientation="v",  # Vertical legend
+        x=1.05,  # Position legend to the right
+        y=1,  # Position legend at the top
+        xanchor="left",  # Anchor legend to the left
+        yanchor="top",  # Anchor legend to the top
+        # visible=False
+        visible=True
+    ),
+    hovermode='closest', # Display only one hover label per trace
+    bargap=0.08,  # Reduce the space between bars
+    bargroupgap=0,  # Reduce space between individual bars in groups
+).update_traces(
+    textposition='outside',
+    hovertemplate='<b>Status:</b> %{label}<br><b>Count</b>: %{y}<extra></extra>'
+)
+
+# Person Pie Chart
+Status_pie=px.pie(
+    df_activity_status,
+    names="Activity Status",
+    values='Count'  # Specify the values parameter
+).update_layout(
+    title='Activity Status',
+    title_x=0.5,
+    font=dict(
+        family='Calibri',
+        size=17,
+        color='black'
+    )
+).update_traces(
+    rotation=0,
+    textposition='auto',
+    textinfo='value+percent',
+    hovertemplate='<b>%{label} Status</b>: %{value}<extra></extra>',
+)
+
+# --------------------------- Products Graphs -------------------------- #
+
+# Product Type dataframe:
+df_product_type = df.groupby('Product Type').size().reset_index(name='Count')
+
+product_bar=px.bar(
+    df_product_type,
+    x='Product Type',
+    y='Count',
+    color='Product Type',
+    text='Count',
+).update_layout(
+    height=850, 
+    width=1700,
+    title=dict(
+        text='Product Type',
+        x=0.5, 
+        font=dict(
+            size=25,
+            family='Calibri',
+            color='black',
+            )
+    ),
+    font=dict(
+        family='Calibri',
+        size=18,
+        color='black'
+    ),
+    xaxis=dict(
+        tickangle=-15,  # Rotate x-axis labels for better readability
+        tickfont=dict(size=18),  # Adjust font size for the tick labels
+        title=dict(
+            text=None,
+            # text="Name",
+            font=dict(size=20),  # Font size for the title
+        ),
+        showticklabels=False  # Hide x-tick labels
+        # showticklabels=True  # Hide x-tick labels
+    ),
+    yaxis=dict(
+        title=dict(
+            text='Count',
+            font=dict(size=20),  # Font size for the title
+        ),
+    ),
+    legend=dict(
+        # title='Support',
+        title_text='',
+        orientation="v",  # Vertical legend
+        x=1.05,  # Position legend to the right
+        y=1,  # Position legend at the top
+        xanchor="left",  # Anchor legend to the left
+        yanchor="top",  # Anchor legend to the top
+        # visible=False
+        visible=True
+    ),
+    hovermode='closest', # Display only one hover label per trace
+    bargap=0.08,  # Reduce the space between bars
+    bargroupgap=0,  # Reduce space between individual bars in groups
+).update_traces(
+    textposition='auto',
+    hovertemplate='<b>Name:</b> %{label}<br><b>Count</b>: %{y}<extra></extra>'
+)
+
+# Person Pie Chart
+product_pie=px.pie(
+    df_product_type,
+    names="Product Type",
+    values='Count'  # Specify the values parameter
+).update_layout(
+    height=850,
+    width=1700,
+    title='Product Type',
+    title_x=0.5,
+    font=dict(
+        family='Calibri',
+        size=17,
+        color='black'
+    )
+).update_traces(
+    rotation=0,
+    textposition='auto',
+    textinfo='none',
+    hovertemplate='<b>%{label} Status</b>: %{value}<extra></extra>',
+)
 
 # # ========================== DataFrame Table ========================== #
 
@@ -194,6 +527,9 @@ products_table.update_layout(
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
 
+# Purpose dataframe:
+df_purpose = df.groupby('Purpose').size().reset_index(name='Count')
+
 # Purpose Table
 purpose_table = go.Figure(data=[go.Table(
     # columnwidth=[50, 50, 50],  # Adjust the width of the columns
@@ -234,17 +570,19 @@ app.layout = html.Div(
         className='divv', 
         children=[ 
         html.H1(
-            'MarCom Report January 2025', 
+            'MarCom Report', 
             className='title'),
-
-                    html.Div(
-            className='btn-box', 
-            children=[
-                html.A(
-                'Repo',
-                href='https://github.com/CxLos/MC_Jan_2025',
-                className='btn'),
-            ]),
+        html.H1(
+            'January 2025', 
+            className='title2'),
+    html.Div(
+        className='btn-box', 
+        children=[
+        html.A(
+            'Repo',
+            href='https://github.com/CxLos/MC_Jan_2025',
+            className='btn'),
+        ]),
     ]),    
 
 # Data Table
@@ -304,17 +642,17 @@ html.Div(
             className='graph22',
             children=[
             html.Div(
-                className='high1',
+                className='high3',
                 children=['MarCom Hours:']
             ),
             html.Div(
-                className='circle',
+                className='circle2',
                 children=[
                     html.Div(
                         className='hilite',
                         children=[
                             html.H1(
-                            className='high2',
+                            className='high4',
                             children=[marcom_hours]
                     ),
                         ]
@@ -332,63 +670,51 @@ html.Div(
     className='row2',
     children=[
         html.Div(
-            className='graph3',
-            children=[
-            # 'Which MarCom activity category are you submitting an entry for?' bar chart
-            dcc.Graph(
-                figure=px.bar(
-                    df_activities,
-                    x='MarCom Activity',
-                    y='Count',
-                    color='MarCom Activity',
-                    text='Count'
-                ).update_layout(
-                    title='MarCom Activity Categories',
-                    xaxis_title='Activity',
-                    yaxis_title='Count',
-                    title_x=0.5,
-                    font=dict(
-                        family='Calibri',
-                        size=17,
-                        color='black'
-                    )
-                ).update_traces(
-                    textposition='auto',
-                    hovertemplate='<b>%{x}</b><br><b>Count</b>: %{y}<extra></extra>'
-                )
-            )
-            ],
-        ),
-        html.Div(
-            className='graph4',
+            className='graph1',
             children=[                
-                # Person completing this form: bar chart
                 dcc.Graph(
-                    figure=px.bar(
-                        df_person,
-                        x='Person completing this form:',
-                        y='Count',
-                        color='Person completing this form:',
-                        text='Count'
-                    ).update_layout(
-                        title='Person Completing Form',
-                        xaxis_title='Person',
-                        yaxis_title='Count',
-                        title_x=0.5,
-                        font=dict(
-                            family='Calibri',
-                            size=17,
-                            color='black'
-                        )
-                    ).update_traces(
-                        textposition='auto',
-                        hovertemplate='<b>%{x}</b><br><b>Count</b>: %{y}<extra></extra>'
-                    )
+                    figure=activity_bar
                 )
             ]
-        )
+        ),
+        html.Div(
+            className='graph2',
+            children=[
+                dcc.Graph(
+                    figure=activity_pie
+                )
+            ],
+        ),
     ]
 ),
+
+        html.Div(
+            className='row3',
+            children=[
+                html.Div(
+                    className='graph33',
+                    children=[
+                        dcc.Graph(
+                            figure=product_bar
+                        )
+                    ]
+                ),
+            ]
+        ),   
+        
+        html.Div(
+            className='row3',
+            children=[
+                html.Div(
+                    className='graph33',
+                    children=[
+                        dcc.Graph(
+                            figure=product_pie
+                        )
+                    ]
+                ),
+            ]
+        ),   
 
 # ROW 2
 html.Div(
@@ -450,40 +776,20 @@ html.Div(
     children=[
         html.Div(
             className='graph1',
-            children=[
-                # 'Activity Status' pie chart
+            children=[                
                 dcc.Graph(
-                    figure=px.pie(
-                        df_activity_status,
-                        values='Count',
-                        names='Activity Status',
-                        color='Activity Status',
-                    ).update_layout(
-                        title='Activity Status',
-                        title_x=0.5,
-                        font=dict(
-                            family='Calibri',
-                            size=17,
-                            color='black'
-                        )
-                    ).update_traces(
-                        textposition='inside',
-                        textinfo='percent+label',
-                        hoverinfo='label+percent',
-                        hole=0.3
-                    )
+                    figure=person_bar
                 )
             ]
         ),
         html.Div(
-            className='graph4',
-            children=[                
-                # Person completing this form: bar chart
+            className='graph2',
+            children=[
                 dcc.Graph(
-
+                    figure=person_pie
                 )
-            ]
-        )
+            ],
+        ),
     ]
 ),
 ])
