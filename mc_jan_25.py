@@ -553,7 +553,8 @@ purpose_table = go.Figure(data=[go.Table(
 
 purpose_table.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
-    height=400,
+    height=850,
+    width=700,
     # width=1500,  # Set a smaller width to make columns thinner
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
@@ -759,8 +760,8 @@ html.Div(
                     className='table2', 
                     children=[
                         dcc.Graph(
-                            className='data',
-                            figure=purpose_table
+                            # className='data',
+                            # figure=purpose_table
                         )
                     ]
                 )
@@ -792,6 +793,20 @@ html.Div(
         ),
     ]
 ),
+
+        html.Div(
+            className='row3',
+            children=[
+                html.Div(
+                    className='graph33',
+                    children=[
+                        dcc.Graph(
+                            figure=purpose_table
+                        )
+                    ]
+                ),
+            ]
+        ),   
 ])
 
 print(f"Serving Flask app '{current_file}'! 🚀")
