@@ -361,6 +361,18 @@
   height: 100%; /* Ensure it spans full height */
 }
 
+.high6 {
+  font-size: 70px;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 13px 0px 13px;
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Horizontal centering */
+  align-items: center; /* Vertical centering */
+  text-align: center; /* Ensure text inside is centered */
+  width: 100%; /* Ensure it spans full width */
+  height: 100%; /* Ensure it spans full height */
+}
+
 .high5 {
   font-size: 70px;
   margin: 0px 0px 0px 0px;

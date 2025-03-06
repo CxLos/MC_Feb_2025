@@ -39,12 +39,14 @@ df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 # Define a discrete color sequence
 color_sequence = px.colors.qualitative.Plotly
 
-# Filtered df where 'Date of Activity:' is in December
-df = df[df['Date of Activity:'].dt.month == 1]
+# Filtered df where 'Date of Activity:' is in January
+df['Date of Activity'] = pd.to_datetime(df['Date of Activity'], errors='coerce')
+df = df[df['Date of Activity'].dt.month == 2]
 
-# print(df_m.head())
+# print(df)
+# print(df[["Date of Activity", "Total travel time (minutes):"]])
 # print('Total Marketing Events: ', len(df))
-# print('Column Names: \n', df.columns)
+# print('Column Names: \n', df.columns.tolist())
 # print('DF Shape:', df.shape)
 # print('Dtypes: \n', df.dtypes)
 # print('Info:', df.info())
@@ -61,13 +63,14 @@ df = df[df['Date of Activity:'].dt.month == 1]
 #        'Timestamp',
 #        'Which MarCom activity category are you submitting an entry for?',
 #        'Person completing this form:', 
-#        'Activity duration:',
+#        'Activity Duration (hours):',
 #        'Purpose of the activity (please only list one):',
 #        'Please select the type of product(s):',
 #        'Please provide public information:', 
 #        'Please explain event-oriented:',
 #        'Date of Activity:', 
 #        'Brief activity description:', 
+#        'Total travel time (minutes):',
 #        'Activity Status'],
 #  dtype='object')
 
@@ -89,15 +92,9 @@ df = df[df['Date of Activity:'].dt.month == 1]
 
 # Rename columns
 df.rename(columns={"Which MarCom activity category are you submitting an entry for?": "MarCom Activity"}, inplace=True)
-
-# Rename Purpose of the activity (please only list one): to Purpose
 df.rename(columns={"Purpose of the activity (please only list one):": "Purpose"}, inplace=True)
-
-# Rename 'Please select the type of product(s):' to 'Product Type'
 df.rename(columns={"Please select the type of product(s):": "Product Type"}, inplace=True)
-
-# Rename 'Please select the type of product(s):' to 'Product Type'
-df.rename(columns={"Activity duration (hours):": "Activity duration"}, inplace=True)
+df.rename(columns={"Activity Duration (hours):": "Activity Duration"}, inplace=True)
 
 # Fill Missing Values
 df['Please provide public information:'] = df['Please provide public information:'].fillna('N/A')
@@ -110,17 +107,35 @@ df['Please explain event-oriented:'] = df['Please explain event-oriented:'].fill
 # -------------------------- MarCom Events --------------------------- #
 
 marcom_events = len(df)
+# print("Total Marcom events:", marcom_events)
 
 # ---------------------------- MarCom Hours ---------------------------- #
 
 # Remove the word 'hours' from the 'Activity duration:' column
-df['Activity duration'] = df['Activity duration'].str.replace(' hours', '')
-df['Activity duration'] = df['Activity duration'].str.replace(' hour', '')
-df['Activity duration'] = pd.to_numeric(df['Activity duration'], errors='coerce')
+df['Activity Duration'] = df['Activity Duration'].astype(str)  # Convert to string
+df['Activity Duration'] = df['Activity Duration'].str.replace(' hours', '')
+df['Activity Duration'] = df['Activity Duration'].str.replace(' hour', '')
+df['Activity Duration'] = pd.to_numeric(df['Activity Duration'], errors='coerce')
+# print('Column Names: \n', df.columns)
 
-marcom_hours = df.groupby('Activity duration').size().reset_index(name='Count')
-marcom_hours = df['Activity duration'].sum()
+marcom_hours = df.groupby('Activity Duration').size().reset_index(name='Count')
+marcom_hours = df['Activity Duration'].sum()
 # print('Total Activity Duration:', sum_activity_duration, 'hours')
+
+# ------------------------- Travel Time ------------------------------ #
+
+df_mc_travel =df[["Date of Activity", "Total travel time (minutes):"]]
+# print(df_mc_travel.head())
+
+df["Total travel time (minutes):"] = df["Total travel time (minutes):"].fillna(0)
+# print(df["Total travel time (minutes):"].value_counts())
+
+# print(df["Total travel time (minutes):"].value_counts())
+
+mc_travel = df["Total travel time (minutes):"].sum()
+# mc_travel = df["Total travel time (minutes):"].sum()/60
+# mc_travel = round(mc_travel)
+# print("Total travel time:", mc_travel)
 
 # --------------------------- MarCom Activity -------------------------- #
 
@@ -213,16 +228,16 @@ activity_pie=px.pie(
 # -------------------------- Person Completing Form ------------------------- #
 
 # "Person completing this form:" dataframe:
-df['Person completing this form:'] = df['Person completing this form:'].str.strip()
-df['Person completing this form:'] = df['Person completing this form:'].replace('Felicia Chanlder', 'Felicia Chandler')
-df_person = df.groupby('Person completing this form:').size().reset_index(name='Count')
+df['Person submitting this form:'] = df['Person submitting this form:'].str.strip()
+df['Person submitting this form:'] = df['Person submitting this form:'].replace('Felicia Chanlder', 'Felicia Chandler')
+df_person = df.groupby('Person submitting this form:').size().reset_index(name='Count')
 # print(df_person.value_counts())
 
 person_bar=px.bar(
     df_person,
-    x='Person completing this form:',
+    x='Person submitting this form:',
     y='Count',
-    color='Person completing this form:',
+    color='Person submitting this form:',
     text='Count',
 ).update_layout(
     height=440, 
@@ -234,7 +249,7 @@ person_bar=px.bar(
             size=25,
             family='Calibri',
             color='black',
-            )
+        )
     ),
     font=dict(
         family='Calibri',
@@ -242,7 +257,7 @@ person_bar=px.bar(
         color='black'
     ),
     xaxis=dict(
-        tickangle=-15,  # Rotate x-axis labels for better readability
+        tickangle=0,  # Rotate x-axis labels for better readability
         tickfont=dict(size=18),  # Adjust font size for the tick labels
         title=dict(
             text=None,
@@ -273,14 +288,14 @@ person_bar=px.bar(
     bargap=0.08,  # Reduce the space between bars
     bargroupgap=0,  # Reduce space between individual bars in groups
 ).update_traces(
-    textposition='outside',
+    textposition='auto',
     hovertemplate='<b>Name:</b> %{label}<br><b>Count</b>: %{y}<extra></extra>'
 )
 
 # Person Pie Chart
 person_pie=px.pie(
     df_person,
-    names="Person completing this form:",
+    names="Person submitting this form:",
     values='Count'  # Specify the values parameter
 ).update_layout(
     title='Ratio of People Filling Out Forms',
@@ -357,12 +372,12 @@ status_bar=px.bar(
     bargap=0.08,  # Reduce the space between bars
     bargroupgap=0,  # Reduce space between individual bars in groups
 ).update_traces(
-    textposition='outside',
+    textposition='auto',
     hovertemplate='<b>Status:</b> %{label}<br><b>Count</b>: %{y}<extra></extra>'
 )
 
 # Person Pie Chart
-Status_pie=px.pie(
+status_pie=px.pie(
     df_activity_status,
     names="Activity Status",
     values='Count'  # Specify the values parameter
@@ -383,8 +398,148 @@ Status_pie=px.pie(
 
 # --------------------------- Products Graphs -------------------------- #
 
+data = [
+    'AmeriCorps Responsibility', 
+    'BMHC Board Meeting', 
+    'BMHC PSA Videos Project',
+    'Came up with social media verbiage for Student Videos', 
+    'Flyer',
+    'Gathered and sent Previous Meeting Minutes',
+    'Intranet Updates',
+    'Key Leader Huddle', 
+    'Key Leaders Huddle', 
+    'Key Leaders Meeting',
+    'Man and Me schedule and post', 
+    'MarCom Impact Report Meeting',
+    'MarCom Playbook', 
+    'Marcom Report',
+    'Meeting - Communications',
+    'Meeting - Impact Report', 
+    'Meeting - Social Media', 
+    'Meeting with Areebah',
+    'Meeting with Director Pamela Parker',
+    'Newsletter', 
+    'Newsletter,',
+    'Newsletter, Started Social Media and Newsletter Benchmarking',
+    'Newsletter, edit Social Media and Newsletter Benchmarking',
+    'No Product - Board Support', 
+    'No Product - Branding Activity',
+    'No Product - Co-branding in General', 
+    'No product - Communications Support',
+    'No product - Community Collaboration', 
+    'No product - Event Support',
+    'No product - Gathering Testimonials',
+    'No product - Human Resources Training for Organizational Efficiency',
+    'No product - Human Resources for Efficiency',
+    'No product - Organizational Efficiency',
+    'No product - Organizational Strategy',
+    'Organization', 
+    'Presentation', 
+    'Presentation, Started Impact Report Presentation',
+    'Press Release', 
+    'Quarterly Team Meeting', 
+    'Report',
+    'Reviewed Student Videos',
+    'Scheduled ACC Tax help with Areebah',
+    'Scheduled Open Board Appointments and Man in Me Posts with Areebah',
+    'Sustainability Binder',
+    'Timesheet', 
+    'Updated Marcom Data for December',
+    'Updated verbiage for MLK Social Media post',
+    'Video', 
+    'Website Updates',
+    'Worked on Video Inquiry and verbiage for ACC and UT',
+    'Writing, Editing, Proofing', 
+    'approved and scheduled UT PhARM Social Media Post',
+    'created and updated Center of Excellence for Youth Mental Health logo',
+    'meeting with Pamela', 
+    'provided board minutes for audit',
+    'sent Areebah a schedule posts list from the Newsletter',
+    'updated - Board RFIs - January 2025', 
+    'updated Board Due Outs file'
+]
+
+df['Product Type'] = (
+    df['Product Type']
+    .str.strip()
+    .replace(
+        {
+            # Products
+            'No Product - Board Support': "No Product",
+            'No Product - Branding Activity': "No Product",
+            'No Product - Co-branding in General': "No Product",
+            'No product - Communications Support': "No Product",
+            'No product - Community Collaboration': "No Product",
+            'No product - Event Support': "No Product",
+            'No product - Gathering Testimonials': "No Product",
+            'No product - Human Resources Training for Organizational Efficiency': "No Product",
+            'No product - Human Resources for Efficiency': "No Product",
+            'No product - Organizational Efficiency': "No Product",
+            'No product - Organizational Strategy': "No Product",
+            
+            # Meetings
+            'Meeting - Communications': "Meeting",
+            'Meeting - Impact Report': "Meeting",
+            'Meeting - Social Media': "Meeting",
+            'Meeting with Areebah': "Meeting",
+            'Meeting with Director Pamela Parker': "Meeting",
+            'MarCom Impact Report Meeting' : "Meeting",
+            'meeting with Pamela': "Meeting",
+            'BMHC Board Meeting' : "Meeting",
+            'Key Leader Huddle' : "Meeting" ,
+            'Key Leaders Huddle' : "Meeting",
+            'Key Leaders Meeting' : "Meeting",
+            'Scheduled ACC Tax help with Areebah' : "Meeting",
+            'Quarterly Team Meeting' : "Meeting",
+            
+            # Newsletter
+            'Newsletter': "Newsletter",
+            'Newsletter,': "Newsletter",
+            'Newsletter, Started Social Media and Newsletter Benchmarking': "Newsletter",
+            'Newsletter, edit Social Media and Newsletter Benchmarking': "Newsletter",
+            
+            # Presentations
+            'Presentation' : "Presentation",
+            'Presentation, Started Impact Report Presentation': "Presentation",
+            'Marcom Report': "Presentation",
+            
+            # Scheduling
+            'Scheduled ACC Tax help with Areebah' : "Scheduling",
+            'Scheduled Open Board Appointments and Man in Me Posts with Areebah' : "Scheduling",
+            
+            # Updates
+            'updated - Board RFIs - January 2025' : "Updates",
+            'updated Board Due Outs file' : "Updates",
+            'Updated Marcom Data for December' : "Updates",
+            'Updated verbiage for MLK Social Media post' : "Updates",
+            'Website Updates' : "Updates",
+            
+            # Student related acitivities
+            'Came up with social media verbiage for Student Videos' : "Student-related activity",
+            'Reviewed Student Videos' : "Student-related activity",
+            'Worked on Video Inquiry and verbiage for ACC and UT' : "Student-related activity",
+            
+            # Social Media
+            'approved and scheduled UT PhARM Social Media Post' : "Social Media",
+            'sent Areebah a schedule posts list from the Newsletter' : "Social Media",
+            'Man and Me schedule and post' : "Social Media",
+            'BMHC PSA Videos Project' : "Social Media",
+            
+            # Editing/ Proofing/ Writing
+            'Writing, Editing, Proofing' : "Editing/ Proofing/ Writing",
+            'created and updated Center of Excellence for Youth Mental Health logo' : "Editing/ Proofing/ Writing",
+            'BMHC Board Meeting' : "Editing/ Proofing/ Writing",
+            'Gathered and sent Previous Meeting Minutes' : "Editing/ Proofing/ Writing",
+            'Sustainability Binder' : "Editing/ Proofing/ Writing",
+            'MarCom Playbook' : "Editing/ Proofing/ Writing",
+            'provided board minutes for audit' : "Editing/ Proofing/ Writing",
+        }
+    )
+)
+
 # Product Type dataframe:
 df_product_type = df.groupby('Product Type').size().reset_index(name='Count')
+# print(df_product_type["Product Type"].unique())
 
 product_bar=px.bar(
     df_product_type,
@@ -463,7 +618,8 @@ product_pie=px.pie(
 ).update_traces(
     rotation=0,
     textposition='auto',
-    textinfo='none',
+    # textinfo='none',
+    textinfo='value+percent',
     hovertemplate='<b>%{label} Status</b>: %{value}<extra></extra>',
 )
 
@@ -521,7 +677,8 @@ products_table = go.Figure(data=[go.Table(
 
 products_table.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
-    height=400,
+    height=850,
+    width=700,
     # width=1500,  # Set a smaller width to make columns thinner
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
@@ -574,7 +731,7 @@ app.layout = html.Div(
             'MarCom Report', 
             className='title'),
         html.H1(
-            'January 2025', 
+            'February 2025', 
             className='title2'),
     html.Div(
         className='btn-box', 
@@ -587,29 +744,29 @@ app.layout = html.Div(
     ]),    
 
 # Data Table
-# html.Div(
-#     className='row0',
-#     children=[
-#         html.Div(
-#             className='table',
-#             children=[
-#                 html.H1(
-#                     className='table-title',
-#                     children='Data Table'
-#                 )
-#             ]
-#         ),
-#         html.Div(
-#             className='table2', 
-#             children=[
-#                 dcc.Graph(
-#                     className='data',
-#                     figure=marcom_table
-#                 )
-#             ]
-#         )
-#     ]
-# ),
+html.Div(
+    className='row0',
+    children=[
+        html.Div(
+            className='table',
+            children=[
+                html.H1(
+                    className='table-title',
+                    children='Data Table'
+                )
+            ]
+        ),
+        html.Div(
+            className='table2', 
+            children=[
+                dcc.Graph(
+                    className='data',
+                    figure=marcom_table
+                )
+            ]
+        )
+    ]
+),
 
 # ROW 1
 html.Div(
@@ -658,7 +815,60 @@ html.Div(
                     ),
                         ]
                     )
+                ],
+            ),
+            ]
+        ),
+    ]
+),
+
+# ROW 1
+html.Div(
+    className='row1',
+    children=[
+        html.Div(
+            className='graph11',
+            children=[
+            html.Div(
+                className='high1',
+                children=['Total Travel Time']
+            ),
+            html.Div(
+                className='circle',
+                children=[
+                    html.Div(
+                        className='hilite',
+                        children=[
+                            html.H1(
+                            className='high6',
+                            children=[mc_travel]
+                    ),
+                        ]
+                    )
  
+                ],
+            ),
+            ]
+        ),
+                html.Div(
+            className='graph22',
+            children=[
+            html.Div(
+                className='high3',
+                children=['Blank']
+            ),
+            html.Div(
+                className='circle2',
+                children=[
+                    html.Div(
+                        className='hilite',
+                        children=[
+                            html.H1(
+                            className='high4',
+                            # children=[marcom_hours]
+                    ),
+                        ]
+                    )
                 ],
             ),
             ]
@@ -761,7 +971,7 @@ html.Div(
                     children=[
                         dcc.Graph(
                             # className='data',
-                            # figure=purpose_table
+                            figure=purpose_table
                         )
                     ]
                 )
@@ -794,19 +1004,76 @@ html.Div(
     ]
 ),
 
+# ROW 4
+html.Div(
+    className='row2',
+    children=[
         html.Div(
-            className='row3',
-            children=[
-                html.Div(
-                    className='graph33',
-                    children=[
-                        dcc.Graph(
-                            figure=purpose_table
-                        )
-                    ]
-                ),
+            className='graph1',
+            children=[                
+                dcc.Graph(
+                    figure=status_bar
+                )
             ]
-        ),   
+        ),
+        html.Div(
+            className='graph2',
+            children=[
+                dcc.Graph(
+                    figure=status_pie
+                )
+            ],
+        ),
+    ]
+),
+
+# html.Div(
+#     className='row0',
+#     children=[
+#         html.Div(
+#             className='table',
+#             children=[
+#                 html.H1(
+#                     className='table-title',
+#                     children='Purpose Table'
+#                 )
+#             ]
+#         ),
+#         html.Div(
+#             className='table2', 
+#             children=[
+#                 dcc.Graph(
+#                     className='data',
+#                     figure=purpose_table
+#                 )
+#             ]
+#         )
+#     ]
+# ),
+
+# html.Div(
+#     className='row0',
+#     children=[
+#         html.Div(
+#             className='table',
+#             children=[
+#                 html.H1(
+#                     className='table-title',
+#                     children='Product Table'
+#                 )
+#             ]
+#         ),
+#         html.Div(
+#             className='table2', 
+#             children=[
+#                 dcc.Graph(
+#                     className='data',
+#                     figure=products_table
+#                 )
+#             ]
+#         )
+#     ]
+# ),
 ])
 
 print(f"Serving Flask app '{current_file}'! 🚀")
