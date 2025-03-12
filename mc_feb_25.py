@@ -568,8 +568,8 @@ product_bar=px.bar(
         tickangle=-15,  # Rotate x-axis labels for better readability
         tickfont=dict(size=18),  # Adjust font size for the tick labels
         title=dict(
-            text=None,
-            # text="Name",
+            # text=None,
+            text="Product",
             font=dict(size=20),  # Font size for the title
         ),
         showticklabels=False  # Hide x-tick labels
@@ -744,29 +744,29 @@ app.layout = html.Div(
     ]),    
 
 # Data Table
-html.Div(
-    className='row0',
-    children=[
-        html.Div(
-            className='table',
-            children=[
-                html.H1(
-                    className='table-title',
-                    children='Data Table'
-                )
-            ]
-        ),
-        html.Div(
-            className='table2', 
-            children=[
-                dcc.Graph(
-                    className='data',
-                    figure=marcom_table
-                )
-            ]
-        )
-    ]
-),
+# html.Div(
+#     className='row0',
+#     children=[
+#         html.Div(
+#             className='table',
+#             children=[
+#                 html.H1(
+#                     className='table-title',
+#                     children='Data Table'
+#                 )
+#             ]
+#         ),
+#         html.Div(
+#             className='table2', 
+#             children=[
+#                 dcc.Graph(
+#                     className='data',
+#                     figure=marcom_table
+#                 )
+#             ]
+#         )
+#     ]
+# ),
 
 # ROW 1
 html.Div(

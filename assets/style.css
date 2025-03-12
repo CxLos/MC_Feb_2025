@@ -327,7 +327,7 @@
 .high2 {
   font-size: 70px;
   margin: 0px 0px 0px 0px;
-  padding: 25px 13px 25px 13px;
+  padding: 10px 13px 10px 13px;
   display: flex; /* Use flexbox for alignment */
   justify-content: center; /* Horizontal centering */
   align-items: center; /* Vertical centering */
@@ -364,7 +364,7 @@
 .high6 {
   font-size: 70px;
   margin: 0px 0px 0px 0px;
-  padding: 0px 13px 0px 13px;
+  padding: 0px 20px 0px 20px;
   display: flex; /* Use flexbox for alignment */
   justify-content: center; /* Horizontal centering */
   align-items: center; /* Vertical centering */
