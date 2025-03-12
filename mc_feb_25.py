@@ -464,7 +464,7 @@ df['Product Type'] = (
     .str.strip()
     .replace(
         {
-            # Products
+            # No Product
             'No Product - Board Support': "No Product",
             'No Product - Branding Activity': "No Product",
             'No Product - Co-branding in General': "No Product",
@@ -476,66 +476,97 @@ df['Product Type'] = (
             'No product - Human Resources for Efficiency': "No Product",
             'No product - Organizational Efficiency': "No Product",
             'No product - Organizational Strategy': "No Product",
-            
+            'No Product': "No Product",
+
             # Meetings
             'Meeting - Communications': "Meeting",
             'Meeting - Impact Report': "Meeting",
             'Meeting - Social Media': "Meeting",
             'Meeting with Areebah': "Meeting",
             'Meeting with Director Pamela Parker': "Meeting",
-            'MarCom Impact Report Meeting' : "Meeting",
+            'MarCom Impact Report Meeting': "Meeting",
             'meeting with Pamela': "Meeting",
-            'BMHC Board Meeting' : "Meeting",
-            'Key Leader Huddle' : "Meeting" ,
-            'Key Leaders Huddle' : "Meeting",
-            'Key Leaders Meeting' : "Meeting",
-            'Scheduled ACC Tax help with Areebah' : "Meeting",
-            'Quarterly Team Meeting' : "Meeting",
-            
+            'BMHC Board Meeting': "Meeting",
+            'Key Leader Huddle': "Meeting",
+            'Key Leaders Huddle': "Meeting",
+            'Key Leaders Meeting': "Meeting",
+            'Scheduled ACC Tax help with Areebah': "Meeting",
+            'Quarterly Team Meeting': "Meeting",
+            'BMHC and Americorp Logo Requirements meeting': "Meeting",
+
             # Newsletter
             'Newsletter': "Newsletter",
             'Newsletter,': "Newsletter",
             'Newsletter, Started Social Media and Newsletter Benchmarking': "Newsletter",
             'Newsletter, edit Social Media and Newsletter Benchmarking': "Newsletter",
-            
+
             # Presentations
-            'Presentation' : "Presentation",
+            'Presentation': "Presentation",
             'Presentation, Started Impact Report Presentation': "Presentation",
             'Marcom Report': "Presentation",
-            
+
             # Scheduling
-            'Scheduled ACC Tax help with Areebah' : "Scheduling",
-            'Scheduled Open Board Appointments and Man in Me Posts with Areebah' : "Scheduling",
-            
+            'Scheduled ACC Tax help with Areebah': "Scheduling",
+            'Scheduled Open Board Appointments and Man in Me Posts with Areebah': "Scheduling",
+
             # Updates
-            'updated - Board RFIs - January 2025' : "Updates",
-            'updated Board Due Outs file' : "Updates",
-            'Updated Marcom Data for December' : "Updates",
-            'Updated verbiage for MLK Social Media post' : "Updates",
-            'Website Updates' : "Updates",
-            
-            # Student related acitivities
-            'Came up with social media verbiage for Student Videos' : "Student-related activity",
-            'Reviewed Student Videos' : "Student-related activity",
-            'Worked on Video Inquiry and verbiage for ACC and UT' : "Student-related activity",
-            
+            'updated - Board RFIs - January 2025': "Updates",
+            'updated Board Due Outs file': "Updates",
+            'Updated Marcom Data for December': "Updates",
+            'Updated verbiage for MLK Social Media post': "Updates",
+            'Website Updates': "Updates",
+            'Update BMHC Service Webpage images': "Updates",
+            'Updated ACC Student Video Post': "Updates",
+            'Updated Felicia Chandler headshot in Photoshop for Website': "Updates",
+            'Updated and Approve ACC Student Video Post': "Updates",
+            'Updates': "Updates",
+            'update and approved Organization chart': "Updates",
+            'updated Red Card': "Updates",
+            'updated and approved Red Card': "Updates",
+
+            # Student-related activities
+            'Came up with social media verbiage for Student Videos': "Student-related activity",
+            'Reviewed Student Videos': "Student-related activity",
+            'Worked on Video Inquiry and verbiage for ACC and UT': "Student-related activity",
+            'Started SQL Certificates': "Student-related activity",
+
             # Social Media
-            'approved and scheduled UT PhARM Social Media Post' : "Social Media",
-            'sent Areebah a schedule posts list from the Newsletter' : "Social Media",
-            'Man and Me schedule and post' : "Social Media",
-            'BMHC PSA Videos Project' : "Social Media",
-            
+            'approved and scheduled UT PhARM Social Media Post': "Social Media",
+            'sent Areebah a schedule posts list from the Newsletter': "Social Media",
+            'Man and Me schedule and post': "Social Media",
+            'BMHC PSA Videos Project': "Social Media",
+            'Social Media': "Social Media",
+
             # Editing/ Proofing/ Writing
-            'Writing, Editing, Proofing' : "Editing/ Proofing/ Writing",
-            'created and updated Center of Excellence for Youth Mental Health logo' : "Editing/ Proofing/ Writing",
-            'BMHC Board Meeting' : "Editing/ Proofing/ Writing",
-            'Gathered and sent Previous Meeting Minutes' : "Editing/ Proofing/ Writing",
-            'Sustainability Binder' : "Editing/ Proofing/ Writing",
-            'MarCom Playbook' : "Editing/ Proofing/ Writing",
-            'provided board minutes for audit' : "Editing/ Proofing/ Writing",
+            'Writing, Editing, Proofing': "Editing/ Proofing/ Writing",
+            'created and updated Center of Excellence for Youth Mental Health logo': "Editing/ Proofing/ Writing",
+            'BMHC Board Meeting': "Editing/ Proofing/ Writing",
+            'Gathered and sent Previous Meeting Minutes': "Editing/ Proofing/ Writing",
+            'Sustainability Binder': "Editing/ Proofing/ Writing",
+            'MarCom Playbook': "Editing/ Proofing/ Writing",
+            'provided board minutes for audit': "Editing/ Proofing/ Writing",
+            'Editing/ Proofing/ Writing': "Editing/ Proofing/ Writing",
+
+            # Other Product Types
+            'AmeriCorp Logo': "Branding",
+            'AmeriCorps Responsibility': "Branding",
+            'Co-branding in general': "Branding",
+            'Community Radio PSA/Promos': "Marketing",
+            'Created Certificate Order Guide': "Administrative Task",
+            'Flyer': "Marketing",
+            'Impact Report': "Impact Report",
+            'Move all files to BMHC Canva': "Administrative Task",
+            'Organizational Efficiency': "Administrative Task",
+            'Please Push - Board Member Garza': "Marketing",
+            'Please Push - Community Health Worker position': "Marketing",
+            'Press Release': "Marketing",
+            'Report': "Report",
+            'Timesheet': "Administrative Task",
+            'created Red Card': "Design",
         }
     )
 )
+
 
 # Product Type dataframe:
 df_product_type = df.groupby('Product Type').size().reset_index(name='Count')
@@ -548,7 +579,7 @@ product_bar=px.bar(
     color='Product Type',
     text='Count',
 ).update_layout(
-    height=850, 
+    height=990, 
     width=1700,
     title=dict(
         text='Product Type',
@@ -606,9 +637,9 @@ product_pie=px.pie(
     names="Product Type",
     values='Count'  # Specify the values parameter
 ).update_layout(
-    height=850,
+    height=950,
     width=1700,
-    title='Product Type',
+    title='Product Type Percentages',
     title_x=0.5,
     font=dict(
         family='Calibri',
